@@ -1,3 +1,14 @@
+# environment variables
+create src/settings/env.ts and write follows.
+```bash
+export const HOSTNAME = '127.0.0.1'
+export const PORT = 3000
+export const DB_PATH = 'data/something.sqlite3'
+```
+
+# node version
+refert to the .node-version
+
 # install dependencied
 ```bash
 yarn install
@@ -17,6 +28,3 @@ yarn build
 ```bash
 yarn jest
 ```
-
-# TODO
-.envを使っていい感じにする

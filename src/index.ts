@@ -1,36 +1,27 @@
 import http from 'http'
 
-import { Controller } from './controllers/contract/Controller'
-import { ContractController } from './controllers/ContractController'
-import { ErrorController } from './controllers/ErrorController'
+import { HOSTNAME, PORT } from './settings/env'
+import { routing } from './settings/routing'
 
-const hostname = '127.0.0.1'
-const port = 3000
+import { Action } from './controllers/contract/Controller'
 
-const routing: { [controllerName: string]: Controller } = {
-    'contracts': new ContractController,
-    'error': new ErrorController,
-}
-
-const server = http.createServer((request, response) => {
+http.createServer((request, response) => {
     console.log('request ', request.url)
 
-    const controllerName = request.url ? request.url.split('/')[1] : 'error'
-    const route = routing[controllerName] ? routing[controllerName] : routing['error']
+    const url = new URL(request.url!, `http://${request.headers.host}`);
+    const pathArray = url.pathname.split('/')
 
-    const sendResponse200 = (contents: Object) => {
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify(contents));
-    }
-    const sendResponse404 = () => {
-        response.writeHead(404, { 'Content-Type': 'application/octet-stream' });
-        response.end("404 not found", 'utf-8');
-    }
+    const routeName = pathArray[1] ?? 'error'
+    const route = routing[routeName] ?? routing['error']
 
-    var method: (() => Promise<Object>) | undefined
+    var method: Action | undefined
     switch (request.method) {
         case 'GET':
-            method = route.index
+            if (pathArray.length == 2) {
+                method = route.index
+            } else if (pathArray.length == 3) {
+                method = route.show
+            }
             break;
         case 'POST':
             method = route.create
@@ -42,9 +33,21 @@ const server = http.createServer((request, response) => {
             method = route.destroy
             break;
     }
-    method ? method().then(sendResponse200).catch(sendResponse404) : sendResponse404()
-});
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+    const sendResponse200 = (contents: Object) => {
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(contents));
+    }
+    const sendResponse404 = () => {
+        response.writeHead(404, { 'Content-Type': 'application/octet-stream' });
+        response.end("404 not found", 'utf-8');
+    }
+
+    if (method !== undefined) {
+        method(url).then(sendResponse200).catch(sendResponse404)
+    } else {
+        sendResponse404()
+    }
+}).listen(PORT, HOSTNAME, () => {
+  console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
+})

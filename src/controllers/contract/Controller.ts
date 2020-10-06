@@ -1,10 +1,14 @@
+export type Action = (url: URL) => Promise<Object>
+
 export interface Controller {
     /** GET */
-    index?: () => Promise<Object>
+    index?: Action
+    /** GET */
+    show?: Action
     /** POST */
-    create?: () => Promise<Object>
+    create?: Action
     /** PUT */
-    update?: () => Promise<Object>
+    update?: Action
     /** DELETE */
-    destroy?: () => Promise<Object>
+    destroy?: Action
 }
