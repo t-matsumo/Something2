@@ -1,18 +1,10 @@
-import sqlite3 from 'sqlite3'
-
 import { Controller } from './contract/Controller'
-import { DB_PATH } from '../settings/env'
+import { Contract } from '../model/Contract'
 
 export class ContractController implements Controller {
+    contract = new Contract()
+
     index = async (_: URL) => {
-        return await new Promise<Object>(resolve => {
-            const db = new sqlite3.Database(DB_PATH)
-            db.serialize(() => {
-                db.all("SELECT first_name, last_name FROM Users", (err, row) => {
-                    resolve(row)
-                })
-            })
-            db.close()
-        })
+        return await this.contract.all()
     }
 }
