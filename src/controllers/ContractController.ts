@@ -8,7 +8,7 @@ export class ContractController implements Controller {
         return await new Promise<Object>(resolve => {
             const db = new sqlite3.Database(DB_PATH)
             db.serialize(() => {
-                db.all("SELECT name FROM contracts", (err, row) => {
+                db.all("SELECT first_name, last_name FROM Users", (err, row) => {
                     resolve(row)
                 })
             })

@@ -4,6 +4,9 @@ import { HOSTNAME, PORT } from './settings/env'
 import { routing } from './settings/routing'
 
 import { Action } from './controllers/contract/Controller'
+import { seed_db } from './settings/seed'
+
+seed_db()
 
 http.createServer((request, response) => {
     console.log('request ', request.url)
@@ -14,7 +17,7 @@ http.createServer((request, response) => {
     const routeName = pathArray[1] ?? 'error'
     const route = routing[routeName] ?? routing['error']
 
-    var method: Action | undefined
+    let method: Action | undefined
     switch (request.method) {
         case 'GET':
             if (pathArray.length == 2) {
