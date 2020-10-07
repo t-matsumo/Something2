@@ -1,4 +1,4 @@
-import { ContractRepository } from './Repository/ContractRepository'
+import { ContractRepository } from './Repository/Contract/ContractRepository'
 
 export class Contract {
     private dataSource: ContractRepository
