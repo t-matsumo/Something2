@@ -6,7 +6,7 @@ import { routing } from './settings/routing'
 import { Action } from './controllers/contract/Controller'
 import { seed_db } from './settings/seed'
 
-seed_db()
+// seed_db()
 
 http.createServer((request, response) => {
     console.log('request ', request.url)

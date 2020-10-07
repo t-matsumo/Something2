@@ -1,7 +1,11 @@
-import { ContractDataSource } from '../Repository/ContractDatasource'
+import { ContractRepository } from './Repository/ContractRepository'
 
 export class Contract {
-    dataSource = new ContractDataSource()
+    private dataSource: ContractRepository
+
+    constructor(repository: ContractRepository) {
+        this.dataSource = repository
+    }
 
     all = async () => {
         return await this.dataSource.all()
